@@ -1,0 +1,400 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080c16">
+<title>Bot-Tele-Host</title>
+<style>
+:root{
+ --bg:#080c16;--panel:#111a2b;--panel2:#0c1423;
+ --line:#263550;--text:#eef3ff;--muted:#899ab5;
+ --blue:#668aff;--cyan:#43d9df;--green:#37d6a0;
+ --red:#ff657b;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);
+font:14px Inter,system-ui,Arial}
+button,input,textarea,select{font:inherit}
+.app{display:flex;min-height:100vh}
+.sidebar{width:245px;background:#0c1321;border-right:1px solid var(--line);
+padding:23px 15px;flex-shrink:0}
+.brand{display:flex;align-items:center;gap:12px;margin-bottom:32px}
+.logo{width:42px;height:42px;border-radius:13px;
+background:linear-gradient(135deg,#668aff,#815be9);
+display:grid;place-items:center;font-size:20px;font-weight:900}
+.brand strong{font-size:17px}
+.brand small{display:block;color:var(--muted);font-size:11px}
+.nav{display:grid;gap:7px}
+.nav button{background:transparent;color:var(--muted);
+text-align:left;border:1px solid transparent;padding:12px;border-radius:10px}
+.nav button.active,.nav button:hover{background:#1a2943;color:white;
+border-color:#30486e}
+.nav button span{margin-right:10px}
+.sidebottom{margin-top:40px;border-top:1px solid var(--line);
+padding-top:18px;color:var(--muted);font-size:11px}
+.main{flex:1;min-width:0;padding:27px;max-width:1500px}
+.top{display:flex;justify-content:space-between;align-items:center;
+gap:15px;margin-bottom:26px}
+h1{font-size:24px;margin:0;letter-spacing:-.7px}
+h2{font-size:16px;margin:0 0 16px}
+h3{font-size:14px;margin:0 0 12px}
+.muted{color:var(--muted)}
+.small{font-size:12px}
+.status{padding:7px 11px;border:1px solid #285a4d;
+background:#102a25;color:var(--green);border-radius:20px;font-size:11px}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.card{background:linear-gradient(145deg,#141f32,#101827);
+border:1px solid var(--line);border-radius:15px;padding:18px;margin-bottom:16px}
+.stat{font-size:25px;font-weight:800;margin-top:8px}
+.statlabel{color:var(--muted);font-size:12px}
+.section{display:none}
+.section.active{display:block}
+label{display:block;color:#aebdd4;font-size:12px;margin:14px 0 6px}
+input,textarea,select{width:100%;padding:11px 12px;
+border:1px solid #30405c;background:#080f1c;color:white;
+border-radius:9px;outline:none}
+textarea{min-height:90px;resize:vertical}
+input:focus,textarea:focus,select:focus{border-color:var(--blue)}
+button{cursor:pointer;border:0;border-radius:9px;padding:10px 14px;
+background:var(--blue);color:white;font-weight:650}
+button.secondary{background:#25334b;color:#e4edff}
+button.danger{background:#49202d;color:#ffb3c0}
+button:disabled{opacity:.5}
+.row{display:flex;gap:10px;align-items:center}
+.row>*{flex:1;min-width:0}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:15px}
+.botrow{display:flex;justify-content:space-between;align-items:center;
+gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}
+.botrow:last-child{border:0}
+.botname{font-weight:700}
+.botmeta{font-size:11px;color:var(--muted)}
+.hidden{display:none!important}
+pre{white-space:pre-wrap;word-break:break-word}
+.note{font-size:11px;color:var(--muted);line-height:1.6;margin-top:8px}
+#message{margin:12px 0;color:var(--cyan);font-size:12px}
+.menuhelp{font-size:11px;color:var(--muted);margin-top:5px}
+@media(max-width:850px){
+ .sidebar{width:65px;padding:16px 8px}
+ .brand{justify-content:center}.brand div:not(.logo){display:none}
+ .nav button{font-size:0;text-align:center;padding:13px 5px}
+ .nav button span{font-size:17px;margin:0}
+ .sidebottom{display:none}.main{padding:18px 12px}
+ .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:480px){
+ .top{align-items:flex-start;flex-direction:column}
+ .grid{gap:8px}.card{padding:13px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+ <div class="brand">
+  <div class="logo">T</div>
+  <div><strong>TELE HOST</strong><small>SERVERLESS PANEL</small></div>
+ </div>
+ <nav class="nav">
+  <button class="active" data-tab="dashboard"><span>⌂</span> Dashboard</button>
+  <button data-tab="bots"><span>◈</span> Bot Manager</button>
+  <button data-tab="commands"><span>⌘</span> Commands & Menu</button>
+  <button data-tab="group"><span>♧</span> Group Settings</button>
+  <button data-tab="broadcast"><span>◉</span> Broadcast</button>
+  <button data-tab="ai"><span>✧</span> AI Chatbot</button>
+  <button data-tab="schedule"><span>◷</span> Scheduled Message</button>
+  <button data-tab="database"><span>▤</span> Database & Config</button>
+ </nav>
+ <div class="sidebottom">BOT-TELE-HOST v2.0<br>Powered by Vercel Functions</div>
+</aside>
+
+<main class="main">
+ <header class="top">
+  <div><h1 id="pageTitle">Dashboard</h1>
+  <div class="muted small">Kelola bot Telegram dari satu tempat.</div></div>
+  <span class="status">● SERVERLESS</span>
+ </header>
+
+ <section id="dashboard" class="section active">
+  <div class="grid">
+   <div class="card"><div class="statlabel">Total Bot</div><div class="stat" id="statBots">0</div></div>
+   <div class="card"><div class="statlabel">Total Pengguna</div><div class="stat" id="statUsers">0</div></div>
+   <div class="card"><div class="statlabel">Total Pesan</div><div class="stat" id="statMessages">0</div></div>
+   <div class="card"><div class="statlabel">Status Panel</div><div class="stat" style="font-size:19px;color:var(--green)">Online</div></div>
+  </div>
+  <div class="card">
+   <h2>Quick Overview</h2>
+   <p class="muted">Bot yang terdaftar di panel kamu.</p>
+   <div id="overview">Hubungkan dashboard untuk melihat data.</div>
+  </div>
+  <div class="card">
+   <h2>Admin Access</h2>
+   <label>ADMIN_KEY</label>
+   <input id="adminKey" type="password" placeholder="Masukkan admin key">
+   <div class="actions"><button id="connect">Connect Dashboard</button>
+   <button class="secondary" id="refresh">Refresh Data</button></div>
+   <div id="message"></div>
+  </div>
+ </section>
+
+ <section id="bots" class="section">
+  <div class="card">
+   <h2>Tambah Telegram Bot</h2>
+   <label>Nama bot</label><input id="botName" placeholder="Nama bot">
+   <label>Telegram Bot Token</label><input id="botToken" type="password" placeholder="Token dari BotFather">
+   <div class="actions"><button id="createBot">+ Add Bot</button></div>
+   <div class="note">Token disimpan di database server, bukan di HTML.</div>
+  </div>
+  <div class="card"><h2>Bot List</h2><div id="botList">Belum ada bot.</div></div>
+ </section>
+
+ <section id="commands" class="section">
+  <div class="card">
+   <h2>Command Settings</h2>
+   <label>Pilih bot</label><select id="commandBot"></select>
+   <label>Pesan /start</label><textarea id="startText"></textarea>
+   <label>Pesan /help</label><textarea id="helpText"></textarea>
+   <label>Custom Menu JSON</label>
+   <textarea id="menuJson">[
+ {"text":"Produk","reply":"Ini informasi produk."},
+ {"text":"Kontak","reply":"Hubungi admin kami."}
+]</textarea>
+   <div class="menuhelp">Format: array berisi text dan reply.</div>
+   <label>Inline Keyboard JSON</label>
+   <textarea id="inlineJson">[
+ {"text":"Website","reply":"Kunjungi website kami."},
+ {"text":"Bantuan","reply":"Silakan hubungi admin."}
+]</textarea>
+   <div class="menuhelp">Tombol inline akan mengirim callback dan bot membalas sesuai reply.</div>
+   <button id="saveCommands">Save Commands & Menu</button>
+  </div>
+ </section>
+
+ <section id="group" class="section">
+  <div class="card">
+   <h2>Group Management</h2>
+   <label>Pilih bot</label><select id="groupBot"></select>
+   <label>Welcome message</label>
+   <textarea id="welcomeText">Selamat datang {name} di grup kami!</textarea>
+   <label>Blocked words (pisahkan dengan koma)</label>
+   <textarea id="blockedWords" placeholder="spam, kata-terlarang"></textarea>
+   <label>Aktifkan moderasi kata</label>
+   <select id="moderation"><option value="false">Nonaktif</option><option value="true">Aktif</option></select>
+   <button id="saveGroup">Save Group Settings</button>
+   <p class="note">Bot harus menjadi admin grup dan diberi izin menghapus pesan untuk moderasi.</p>
+  </div>
+ </section>
+
+ <section id="broadcast" class="section">
+  <div class="card">
+   <h2>Broadcast Center</h2>
+   <label>Pilih bot</label><select id="broadcastBot"></select>
+   <label>Pesan broadcast</label>
+   <textarea id="broadcastText" placeholder="Tulis pesan broadcast..."></textarea>
+   <button id="sendBroadcast">Send Broadcast</button>
+   <div id="broadcastStatus" class="note"></div>
+   <p class="note">Pengiriman dibatasi maksimal 20 pengguna per permintaan untuk mengurangi risiko timeout dan mengikuti batas Telegram.</p>
+  </div>
+ </section>
+
+ <section id="ai" class="section">
+  <div class="card">
+   <h2>AI Chatbot</h2>
+   <label>Pilih bot</label><select id="aiBot"></select>
+   <label>AI Chatbot</label>
+   <select id="aiEnabled"><option value="false">Disabled</option><option value="true">Enabled</option></select>
+   <label>System Prompt</label>
+   <textarea id="aiPrompt">Kamu adalah asisten yang ramah dan membantu. Jawab dengan singkat dan jelas.</textarea>
+   <button id="saveAI">Save AI Settings</button>
+   <p class="note">Memerlukan OPENAI_API_KEY di Environment Variables Vercel. API key tidak dimasukkan di sini.</p>
+  </div>
+ </section>
+
+ <section id="schedule" class="section">
+  <div class="card">
+   <h2>Scheduled Message</h2>
+   <label>Pilih bot</label><select id="scheduleBot"></select>
+   <label>Telegram Chat ID</label><input id="scheduleChat" placeholder="Contoh: 123456789">
+   <label>Waktu pengiriman</label><input id="scheduleTime" type="datetime-local">
+   <label>Pesan</label><textarea id="scheduleText"></textarea>
+   <button id="addSchedule">Create Schedule</button>
+   <p class="note">Scheduler eksternal harus memanggil endpoint run-schedules secara berkala dengan CRON_SECRET.</p>
+  </div>
+ </section>
+
+ <section id="database" class="section">
+  <div class="card">
+   <h2>Database & Configuration</h2>
+   <label>Pilih bot</label><select id="configBot"></select>
+   <div class="actions">
+    <button id="exportConfig" class="secondary">Export Config</button>
+    <button id="importTrigger" class="secondary">Upload Config JSON</button>
+   </div>
+   <input type="file" id="configFile" accept=".json,application/json" hidden>
+   <div class="note">Import hanya mengubah konfigurasi bot, bukan token Telegram.</div>
+  </div>
+ </section>
+</main>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+let bots=[];
+let selected={};
+
+function adminKey(){return sessionStorage.getItem("teleHostKey")||""}
+function msg(text,error=false){
+ $("message").textContent=text;
+ $("message").style.color=error?"#ff7185":"#43d9df";
+}
+async function api(action,body={}){
+ const method=action==="list"||action==="stats"||action==="export"?"GET":"POST";
+ const res=await fetch("/api/index?action="+action+(method==="GET"&&body.id?"&id="+encodeURIComponent(body.id):""),{
+  method,headers:{"Content-Type":"application/json","x-admin-key":adminKey()},
+  body:method==="POST"?JSON.stringify(body):undefined
+ });
+ const data=await res.json();
+ if(!res.ok)throw Error(data.error||"Request gagal");
+ return data;
+}
+function parseJSON(id){
+ try{return JSON.parse($(id).value||"[]")}
+ catch(e){throw Error("Format JSON tidak valid: "+id)}
+}
+function activeBot(id){return bots.find(b=>b.id===$(id).value)}
+function fillSelects(){
+ ["commandBot","groupBot","broadcastBot","aiBot","scheduleBot","configBot"].forEach(id=>{
+  const el=$(id),old=el.value;el.replaceChildren();
+  bots.forEach(b=>{const o=document.createElement("option");o.value=b.id;o.textContent=b.name;el.append(o)});
+  if(bots.some(b=>b.id===old))el.value=old;
+ });
+}
+async function load(){
+ const data=await api("list");bots=data.bots||[];
+ fillSelects();renderBots();
+ $("statBots").textContent=bots.length;
+ $("overview").textContent=bots.length?bots.map(b=>b.name).join(" · "):"Belum ada bot.";
+ if(bots.length)await loadStats();
+}
+function renderBots(){
+ const box=$("botList");box.replaceChildren();
+ if(!bots.length){box.textContent="Belum ada bot.";return}
+ bots.forEach(b=>{
+  const row=document.createElement("div");row.className="botrow";
+  const info=document.createElement("div"),name=document.createElement("div"),meta=document.createElement("div");
+  name.className="botname";name.textContent=b.name;
+  meta.className="botmeta";meta.textContent="@"+(b.username||"telegram")+" · "+b.id;
+  info.append(name,meta);
+  const btn=document.createElement("button");btn.className="secondary";btn.textContent="Edit";
+  btn.onclick=()=>{["commandBot","groupBot","broadcastBot","aiBot","scheduleBot","configBot"].forEach(id=>$(id).value=b.id);loadConfig(b)};
+  row.append(info,btn);box.append(row);
+ });
+}
+async function loadStats(){
+ let users=0,messages=0;
+ for(const b of bots){
+  try{const s=await api("stats",{id:b.id});users+=s.users||0;messages+=s.messages||0}catch(e){}
+ }
+ $("statUsers").textContent=users;$("statMessages").textContent=messages;
+}
+async function loadConfig(b){
+ try{
+  const d=await api("export",{id:b.id});const c=d.config;
+  $("startText").value=c.startText||"";
+  $("helpText").value=c.helpText||"";
+  $("menuJson").value=JSON.stringify(c.menu||[],null,2);
+  $("inlineJson").value=JSON.stringify(c.inline||[],null,2);
+  $("welcomeText").value=c.welcomeText||"";
+  $("blockedWords").value=(c.blockedWords||[]).join(", ");
+  $("moderation").value=String(!!c.moderation);
+  $("aiEnabled").value=String(!!c.aiEnabled);
+  $("aiPrompt").value=c.aiPrompt||"";
+ }catch(e){msg(e.message,true)}
+}
+document.querySelectorAll(".nav button").forEach(btn=>btn.onclick=()=>{
+ document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active"));
+ document.querySelectorAll(".section").forEach(x=>x.classList.remove("active"));
+ btn.classList.add("active");$(btn.dataset.tab).classList.add("active");
+ $("pageTitle").textContent=btn.textContent.trim();
+});
+$("connect").onclick=async()=>{
+ sessionStorage.setItem("teleHostKey",$("adminKey").value.trim());
+ try{await load();msg("Dashboard connected.");}catch(e){msg(e.message,true)}
+};
+$("refresh").onclick=async()=>{try{await load();msg("Data refreshed.")}catch(e){msg(e.message,true)}};
+$("createBot").onclick=async()=>{
+ try{
+  const d=await api("create",{name:$("botName").value,token:$("botToken").value});
+  $("botName").value="";$("botToken").value="";
+  await load();msg(d.message);
+ }catch(e){msg(e.message,true)}
+};
+$("saveCommands").onclick=async()=>{
+ try{const b=activeBot("commandBot");if(!b)throw Error("Pilih bot dahulu");
+ await api("update",{id:b.id,config:{
+  startText:$("startText").value,helpText:$("helpText").value,
+  menu:parseJSON("menuJson"),inline:parseJSON("inlineJson")
+ }});
+ msg("Commands dan menu berhasil disimpan.");
+ }catch(e){msg(e.message,true)}
+};
+$("saveGroup").onclick=async()=>{
+ try{const b=activeBot("groupBot");if(!b)throw Error("Pilih bot");
+ await api("update",{id:b.id,config:{
+  welcomeText:$("welcomeText").value,
+  blockedWords:$("blockedWords").value.split(",").map(x=>x.trim()).filter(Boolean),
+  moderation:$("moderation").value==="true"
+ }});
+ msg("Group settings tersimpan.");
+ }catch(e){msg(e.message,true)}
+};
+$("saveAI").onclick=async()=>{
+ try{const b=activeBot("aiBot");if(!b)throw Error("Pilih bot");
+ await api("update",{id:b.id,config:{
+  aiEnabled:$("aiEnabled").value==="true",aiPrompt:$("aiPrompt").value
+ }});
+ msg("AI settings tersimpan.");
+ }catch(e){msg(e.message,true)}
+};
+$("sendBroadcast").onclick=async()=>{
+ try{const b=activeBot("broadcastBot");if(!b)throw Error("Pilih bot");
+ if(!confirm("Kirim broadcast ke pengguna bot ini?"))return;
+ const d=await api("broadcast",{id:b.id,text:$("broadcastText").value});
+ $("broadcastStatus").textContent=`Berhasil: ${d.sent}, gagal: ${d.failed}`;
+ }catch(e){$("broadcastStatus").textContent=e.message}
+};
+$("addSchedule").onclick=async()=>{
+ try{const b=activeBot("scheduleBot");if(!b)throw Error("Pilih bot");
+ const d=await api("schedule",{id:b.id,chatId:$("scheduleChat").value,
+  at:new Date($("scheduleTime").value).getTime(),text:$("scheduleText").value});
+ msg(d.message);
+ }catch(e){msg(e.message,true)}
+};
+$("exportConfig").onclick=async()=>{
+ try{
+  const b=activeBot("configBot");if(!b)throw Error("Pilih bot");
+  const d=await api("export",{id:b.id});
+  const blob=new Blob([JSON.stringify(d.config,null,2)],{type:"application/json"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);
+  a.download=b.name.replace(/[^a-z0-9]/gi,"_")+"-config.json";a.click();
+  URL.revokeObjectURL(a.href);
+ }catch(e){msg(e.message,true)}
+};
+$("importTrigger").onclick=()=>$("configFile").click();
+$("configFile").onchange=async e=>{
+ try{
+  const b=activeBot("configBot");if(!b)throw Error("Pilih bot");
+  const file=e.target.files[0];if(!file)return;
+  const config=JSON.parse(await file.text());
+  await api("update",{id:b.id,config});await loadConfig(b);
+  msg("Config berhasil di-upload.");
+ }catch(err){msg(err.message,true)}
+ e.target.value="";
+};
+["commandBot","groupBot","aiBot"].forEach(id=>$(id).onchange=()=>{
+ const b=activeBot(id);if(b)loadConfig(b);
+});
+</script>
+</body>
+</html>
