@@ -1,0 +1,14 @@
+
+{
+  "name": "bot-tele-host",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Telegram Multi Bot Serverless Hosting Panel",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "dev": "vercel dev"
+  },
+  "dependencies": {}
+}
